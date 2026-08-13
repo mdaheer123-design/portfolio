@@ -1,56 +1,29 @@
 "use client";
 
-import { Suspense, useEffect, useRef } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Suspense, useEffect } from "react";
+import { Canvas } from "@react-three/fiber";
 import { Bounds, Environment, OrbitControls, useAnimations, useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 
-type LookTarget = { x: number; y: number; active: boolean };
-
-function Robot({ look }: { look: React.MutableRefObject<LookTarget> }) {
+function Robot() {
   const { scene, animations } = useGLTF("/robot_playground.glb");
   const { actions } = useAnimations(animations, scene);
-  const head = useRef<THREE.Object3D | null>(null);
-  const base = useRef(new THREE.Euler());
 
   useEffect(() => {
     const playground = scene.getObjectByName("holo");
     playground?.removeFromParent();
-    head.current = scene.getObjectByName("Head_M_033") ?? scene.getObjectByName("head") ?? null;
-    if (head.current) base.current.copy(head.current.rotation);
     const action = actions.Experiment ?? Object.values(actions).find(Boolean) ?? null;
-    action?.reset().fadeIn(0.3).play();
-    return () => { action?.fadeOut(0.15).stop(); };
+    action?.reset().play();
+    return () => { action?.stop(); };
   }, [actions, scene]);
-
-  useFrame((_, delta) => {
-    if (!head.current) return;
-    const speed = 1 - Math.exp(-delta * 8);
-    const x = look.current.active ? look.current.x : 0;
-    const y = look.current.active ? look.current.y : 0;
-    head.current.rotation.y = THREE.MathUtils.lerp(head.current.rotation.y, base.current.y + x * 0.42, speed);
-    head.current.rotation.x = THREE.MathUtils.lerp(head.current.rotation.x, base.current.x - y * 0.22, speed);
-
-  });
 
   return <primitive object={scene} />;
 }
 
 export function RobotHero() {
-  const look = useRef<LookTarget>({ x: 0, y: 0, active: false });
-
   return <div
     className="robot-stage"
-    aria-label="Interactive 3D robot. Move the cursor nearby to make it look at you and drag to rotate it."
-    onPointerMove={(event) => {
-      const box = event.currentTarget.getBoundingClientRect();
-      look.current = {
-        x: THREE.MathUtils.clamp(((event.clientX - box.left) / box.width) * 2 - 1, -1, 1),
-        y: THREE.MathUtils.clamp(((event.clientY - box.top) / box.height) * 2 - 1, -1, 1),
-        active: true,
-      };
-    }}
-    onPointerLeave={() => { look.current.active = false; }}
+    aria-label="Interactive 3D robot playing its original animation. Drag to rotate it."
   >
     <Canvas
       camera={{ position: [0, 1.4, 6], fov: 36 }}
@@ -66,7 +39,7 @@ export function RobotHero() {
       <directionalLight position={[-4, 2, 3]} intensity={2.2} color="#22D3EE" />
       <Suspense fallback={null}>
         <Bounds fit clip observe margin={1.16}>
-          <Robot look={look} />
+          <Robot />
         </Bounds>
         <Environment preset="studio" />
       </Suspense>
