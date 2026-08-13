@@ -103,7 +103,10 @@ export function LeetCodeHeatmap() {
                 className="heatmap-day"
                 data-level={day.level}
                 key={day.timestamp}
-                style={index === 0 ? { gridRowStart: day.date.getUTCDay() + 1 } : undefined}
+                style={{
+                  gridColumnStart: Math.floor(((days[0]?.date.getUTCDay() ?? 0) + index) / 7) + 1,
+                  gridRowStart: day.date.getUTCDay() + 1,
+                }}
                 title={`${day.dateLabel}: ${day.count} ${day.count === 1 ? "submission" : "submissions"}`}
                 aria-label={`${day.dateLabel}: ${day.count} ${day.count === 1 ? "submission" : "submissions"}`}
               />)}
