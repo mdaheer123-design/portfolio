@@ -53,7 +53,16 @@ export function RobotHero() {
     onPointerLeave={() => { look.current.active = false; }}
     onDoubleClick={() => { look.current = { x: 0, y: 0, active: false }; setRestartKey((value) => value + 1); }}
   >
-    <Canvas key={restartKey} camera={{ position: [0, 1.4, 6], fov: 36 }} gl={{ alpha: true, antialias: true }} dpr={[1, 1.75]}>
+    <Canvas
+      key={restartKey}
+      camera={{ position: [0, 1.4, 6], fov: 36 }}
+      gl={{ alpha: true, antialias: true, premultipliedAlpha: false }}
+      onCreated={({ gl, scene }) => {
+        gl.setClearColor(0x000000, 0);
+        scene.background = null;
+      }}
+      dpr={[1, 1.75]}
+    >
       <ambientLight intensity={1.7} />
       <directionalLight position={[4, 6, 5]} intensity={3.2} color="#F4F4F1" />
       <directionalLight position={[-4, 2, 3]} intensity={2.2} color="#22D3EE" />
@@ -63,7 +72,19 @@ export function RobotHero() {
         </Bounds>
         <Environment preset="studio" />
       </Suspense>
-      <OrbitControls makeDefault enablePan={false} minDistance={2.5} maxDistance={8} minPolarAngle={Math.PI / 3} maxPolarAngle={Math.PI / 1.7} />
+      <OrbitControls
+        makeDefault
+        enablePan={false}
+        enableRotate
+        enableZoom
+        enableDamping
+        dampingFactor={0.08}
+        zoomSpeed={0.8}
+        minDistance={2.5}
+        maxDistance={7}
+        minPolarAngle={Math.PI / 3}
+        maxPolarAngle={Math.PI / 1.7}
+      />
     </Canvas>
   </div>;
 }
