@@ -1,9 +1,10 @@
 "use client";
 
+/* eslint-disable react/no-unknown-property */
+
 import { Suspense, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Bounds, Environment, OrbitControls, useAnimations, useGLTF } from "@react-three/drei";
-import * as THREE from "three";
 
 function Robot() {
   const { scene, animations } = useGLTF("/robot_playground.glb");

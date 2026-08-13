@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence, useScroll, useSpring } from "framer-motion";
 import { ArrowRight, BrainCircuit, BriefcaseBusiness, Code2, ContactRound as Linkedin, ExternalLink, GitFork as Github, GraduationCap, Layers3, Mail, Menu, Server, Sparkles, Terminal, X } from "lucide-react";
 import { RobotHero } from "./RobotHero";
+import { LeetCodeHeatmap } from "./LeetCodeHeatmap";
 
 const links = ["about", "skills", "projects", "experience", "contact"];
 const reveal = { hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0, transition: { duration: .3, ease: [0.16, 1, 0.3, 1] as const } } };
@@ -25,7 +26,7 @@ type GraphNode = { label: string; detail?: string };
 function NodeGraph({ nodes, compact = false }: { nodes: GraphNode[]; compact?: boolean }) {
   return <motion.div className={`node-graph ${compact ? "compact" : ""}`} variants={stagger} initial="hidden" whileInView="show" viewport={{ once: true, amount: .3 }}>
     {nodes.map((node, i) => <motion.div className="node-wrap" variants={reveal} key={node.label}>
-      <div className="graph-node" tabIndex={0}><span>{String(i + 1).padStart(2, "0")}</span>{node.label}{node.detail && <small>{node.detail}</small>}</div>
+      <div className="graph-node"><span>{String(i + 1).padStart(2, "0")}</span>{node.label}{node.detail && <small>{node.detail}</small>}</div>
       {i < nodes.length - 1 && <div className="edge"><i /></div>}
     </motion.div>)}
   </motion.div>;
@@ -75,6 +76,8 @@ export function Portfolio() {
     <section><Container><SectionHeading eyebrow="Architecture" title="How I Build AI Systems" copy="A clear path from user intent to grounded, observable execution."/><Card className="architecture"><NodeGraph nodes={[{label:"User",detail:"Intent & context"},{label:"Application",detail:"Experience layer"},{label:"API Layer",detail:"Contracts & auth"},{label:"Orchestrator",detail:"State & routing"},{label:"RAG / Agent",detail:"Grounding & action"},{label:"LLM",detail:"Reasoning"},{label:"Tools",detail:"External capability"},{label:"Database",detail:"Memory & records"}]}/></Card></Container></section>
 
     <section><Container className="education-grid"><div><SectionHeading eyebrow="Education" title="Foundations in AI & Data Science"/><Card className="education"><GraduationCap/><div><h3>B.Tech - Artificial Intelligence & Data Science</h3><p>C.K. College of Engineering and Technology, Cuddalore</p></div><div><AnimatedNumber value="8.2" suffix="/10"/><span>CGPA</span></div></Card></div><div><SectionHeading eyebrow="Certifications" title="Continuous Learning"/><Card className="certs">{["Machine Learning with Python - Coursera","Introduction to Generative AI - Coursera","Data Analysis with Python - Coursera","Python Programming - Mimo"].map(x=><p key={x}><span>✓</span>{x}</p>)}</Card></div></Container></section>
+
+    <section><Container><SectionHeading eyebrow="Problem solving" title="LeetCode Activity" copy="A live view of consistent practice, submissions, and problem-solving momentum."/><LeetCodeHeatmap/></Container></section>
 
     <section><Container><SectionHeading eyebrow="Open source" title="Building in Public" copy="Experiments, production-minded systems, and the work behind them."/><Card className="github-card"><div className="github-copy"><Github/><h3>mdaheer123-design</h3><p>Building practical AI systems in the open - from retrieval pipelines to agentic automation.</p><Button href="https://github.com/mdaheer123-design" target="_blank">View GitHub <ExternalLink /></Button></div><div className="contrib" aria-label="Contribution-style visualization">{contributions.map((v,i)=><i key={i} data-level={v}/>)}</div></Card></Container></section>
 
