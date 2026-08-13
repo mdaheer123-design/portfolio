@@ -16,25 +16,6 @@ function Robot({ look }: { look: React.MutableRefObject<LookTarget> }) {
   useEffect(() => {
     const playground = scene.getObjectByName("holo");
     playground?.removeFromParent();
-    scene.traverse((object) => {
-      const mesh = object as THREE.Mesh;
-      if (!mesh.isMesh || mesh.userData.portfolioPaletteApplied) return;
-      const useAccent = /eye|mouth|face|ear|tophead|neck|shoulder|hand|finger|knee|foot|hip|tube|ball/i.test(object.name);
-      const color = useAccent ? "#22D3EE" : "#F4F4F1";
-      const recolor = (source: THREE.Material) => {
-        const material = source.clone() as THREE.MeshStandardMaterial;
-        material.color?.set(color);
-        material.emissive?.set(useAccent ? "#22D3EE" : "#F4F4F1");
-        if ("emissiveIntensity" in material) material.emissiveIntensity = useAccent ? 0.18 : 0.04;
-        material.map = null;
-        material.emissiveMap = null;
-        material.vertexColors = false;
-        material.needsUpdate = true;
-        return material;
-      };
-      mesh.material = Array.isArray(mesh.material) ? mesh.material.map(recolor) : recolor(mesh.material);
-      mesh.userData.portfolioPaletteApplied = true;
-    });
     head.current = scene.getObjectByName("Head_M_033") ?? scene.getObjectByName("head") ?? null;
     if (head.current) base.current.copy(head.current.rotation);
     const action = actions.Experiment ?? Object.values(actions)[0];
