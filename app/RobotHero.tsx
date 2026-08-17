@@ -11,8 +11,8 @@ function Robot() {
   const { actions } = useAnimations(animations, scene);
 
   useEffect(() => {
-    const playground = scene.getObjectByName("holo");
-    playground?.removeFromParent();
+    scene.getObjectByName("holo")?.removeFromParent();
+    scene.getObjectByName("ground")?.removeFromParent();
     const action = actions.Experiment ?? Object.values(actions).find(Boolean) ?? null;
     action?.reset().play();
     return () => { action?.stop(); };
@@ -39,7 +39,7 @@ export function RobotHero() {
       <directionalLight position={[4, 6, 5]} intensity={3.2} color="#F4F4F1" />
       <directionalLight position={[-4, 2, 3]} intensity={2.2} color="#22D3EE" />
       <Suspense fallback={null}>
-        <Bounds fit clip observe margin={1.16}>
+        <Bounds fit clip observe margin={1.5}>
           <Robot />
         </Bounds>
         <Environment preset="studio" />
