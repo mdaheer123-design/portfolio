@@ -2,13 +2,15 @@
 
 /* eslint-disable react/no-unknown-property */
 
-import { Suspense, useEffect } from "react";
-import { Canvas } from "@react-three/fiber";
+import { Suspense, useEffect, useRef } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { Bounds, Environment, OrbitControls, useAnimations, useGLTF } from "@react-three/drei";
+import { MathUtils, type Group } from "three";
 
 function Robot() {
   const { scene, animations } = useGLTF("/robot_playground.glb");
   const { actions } = useAnimations(animations, scene);
+  const robot = useRef<Group>(null);
 
   useEffect(() => {
     scene.getObjectByName("holo")?.removeFromParent();
@@ -18,7 +20,13 @@ function Robot() {
     return () => { action?.stop(); };
   }, [actions, scene]);
 
-  return <primitive object={scene} />;
+  useFrame(({ pointer }) => {
+    if (!robot.current) return;
+    robot.current.rotation.y = MathUtils.lerp(robot.current.rotation.y, pointer.x * 0.28, 0.08);
+    robot.current.rotation.x = MathUtils.lerp(robot.current.rotation.x, -pointer.y * 0.08, 0.08);
+  });
+
+  return <group ref={robot}><primitive object={scene} /></group>;
 }
 
 export function RobotHero() {
